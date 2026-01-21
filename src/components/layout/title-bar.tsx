@@ -49,6 +49,8 @@ export function TitleBar() {
                     <span className="text-sm tracking-tight hidden md:block">QT IDE</span>
                 </div>
 
+                <div className="mx-2 h-4 w-[1px] bg-border" />
+
                 <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-normal text-muted-foreground hover:text-foreground">
                     <HelpCircle className="h-3.5 w-3.5 mr-1" />
                     Help
@@ -57,7 +59,7 @@ export function TitleBar() {
 
             {/* Center Section: Context Info */}
             <div className="absolute left-1/2 -translate-x-1/2 text-xs font-medium text-muted-foreground pointer-events-none hidden lg:block">
-                MyProject — src/app/page.tsx
+                MyProject — Documentation
             </div>
 
             {/* Right Section: Panel Toggles & Theme */}

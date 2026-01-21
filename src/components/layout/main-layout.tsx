@@ -7,9 +7,11 @@ import { TitleBar } from "./title-bar"
 import { ActivityBar } from "./activity-bar"
 import { Sidebar } from "./sidebar"
 import { StatusBar } from "./status-bar"
-import { MainEditor } from "./main-editor"
+import { WelcomeScreen } from "./welcome-screen"
 import { BottomPanel } from "./bottom-panel"
 import { RightPanel } from "./right-panel"
+import { DocViewer } from "./doc-viewer"
+import { useDocStore } from "@/store/useDocStore"
 import { cn } from "@/lib/utils"
 
 export function MainLayout() {
@@ -18,6 +20,8 @@ export function MainLayout() {
         isRightPanelOpen,
         isBottomPanelOpen,
     } = useLayoutStore()
+
+    const { viewMode, selectedDocPath } = useDocStore()
 
     // Prevent hydration mismatch
     const [mounted, setMounted] = React.useState(false)
@@ -53,9 +57,13 @@ export function MainLayout() {
                 {/* Main Content Area */}
                 <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                     <div className="flex-1 flex overflow-hidden">
-                        {/* Center Editor */}
-                        <div className="flex-1 min-w-0 overflow-hidden relative">
-                            <MainEditor />
+                        {/* Center Doc Viewer or Welcome Screen */}
+                        <div className="flex-1 min-w-0 overflow-hidden relative flex flex-col">
+                            {selectedDocPath ? (
+                                <DocViewer path={selectedDocPath} />
+                            ) : (
+                                <WelcomeScreen />
+                            )}
                         </div>
 
                         {/* Right Panel (Fixed Width when open) */}
