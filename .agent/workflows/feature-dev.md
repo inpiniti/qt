@@ -29,6 +29,7 @@ description: Agile/Lean 방법론 기반의 역할 분담형 기능 개발 워�
     *   `mobile-developer`: iOS/Android 네이티브 앱 개발
     *   `cross-platform-developer`: Flutter/React Native 개발
     *   `web-publisher`: 시맨틱 HTML, CSS 스타일링, 웹 표준 준수
+    *   `functional-programming`: 함수형 프로그래밍 기법 적용 (Python/JS/TS)
 
 *   **특화 기술 전문가 (Specialists)**
     *   `nextjs-expert`: App Router, SSR/CSR 최적화
