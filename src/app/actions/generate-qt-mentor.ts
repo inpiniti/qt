@@ -12,8 +12,8 @@ export async function generateQtMentor(title: string, passage: string, verses: {
 
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
-        // Using gemini-2.0-flash-exp as a reasonable substitute for the requested 'preview'
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+        // Using gemini-1.5-flash for better stability and support
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const verseText = verses.map(v => `${v.num}. ${v.text}`).join('\n');
 
