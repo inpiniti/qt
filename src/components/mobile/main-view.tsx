@@ -18,16 +18,20 @@ interface QTContent {
 
 import { getDailyQTData, DailyQTData } from "@/app/actions/get-qt-data"
 import { getQtMeditations, MeditationPost } from "@/app/actions/get-qt-meditations"
+import { generateQtMentor } from "@/app/actions/generate-qt-mentor"
 import { ExpandableContent } from "./expandable-content"
-import { Loader2 } from "lucide-react"
+import { Loader2, Sparkles, Feather } from "lucide-react"
+import ReactMarkdown from "react-markdown"
 
 export function MobileMainView() {
     const [date, setDate] = React.useState(new Date()) // Default to today
-    const [activeSheet, setActiveSheet] = React.useState<"commentary" | "meditation" | null>(null)
+    const [activeSheet, setActiveSheet] = React.useState<"commentary" | "meditation" | "mentor" | null>(null)
     const [data, setData] = React.useState<DailyQTData | null>(null)
     const [meditations, setMeditations] = React.useState<MeditationPost[]>([])
     const [loading, setLoading] = React.useState(false)
     const [meditationLoading, setMeditationLoading] = React.useState(false)
+    const [mentorContent, setMentorContent] = React.useState<string | null>(null)
+    const [mentorLoading, setMentorLoading] = React.useState(false)
 
     // Format date for API (YYYY-MM-DD)
     const formatDateKey = (d: Date) => {
@@ -44,6 +48,7 @@ export function MobileMainView() {
         const fetchData = async () => {
             setLoading(true)
             setMeditations([]) // Reset meditations
+            setMentorContent(null) // Reset AI content on date change
             const dateStr = formatDateKey(date)
 
             // 1. Fetch Main QT Data
@@ -85,6 +90,21 @@ export function MobileMainView() {
         }
         fetchData()
     }, [date])
+
+    const handleOpenMentor = async () => {
+        setActiveSheet("mentor")
+        if (data && !mentorContent) {
+            setMentorLoading(true)
+            try {
+                const content = await generateQtMentor(data.title, data.passage, data.verses)
+                setMentorContent(content)
+            } catch (error) {
+                console.error("Failed to generate mentor content", error)
+            } finally {
+                setMentorLoading(false)
+            }
+        }
+    }
 
     const handlePrevDate = () => {
         const newDate = new Date(date)
@@ -167,6 +187,16 @@ export function MobileMainView() {
                 {/* Floating Bottom Action Buttons */}
                 <div className="absolute bottom-6 right-5 flex flex-col gap-3 z-20">
                     <button
+                        onClick={handleOpenMentor}
+                        className="group flex flex-col items-center gap-1"
+                    >
+                        <div className="w-12 h-12 rounded-2xl bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] flex items-center justify-center border-2 border-[#D4E0D1] group-hover:scale-105 transition-transform duration-200">
+                            <Feather className="h-5 w-5 text-[#8FAFAF]" />
+                        </div>
+                        <span className="text-[0.6rem] font-bold text-[#8FAFAF] bg-white/80 px-2 py-0.5 rounded-full backdrop-blur-sm">문학소년</span>
+                    </button>
+
+                    <button
                         onClick={() => setActiveSheet("meditation")}
                         className="group flex flex-col items-center gap-1"
                     >
@@ -205,6 +235,42 @@ export function MobileMainView() {
                                 />
                             </div>
                         ))}
+                    </div>
+                </BottomSheet>
+
+                <BottomSheet
+                    isOpen={activeSheet === "mentor"}
+                    onClose={() => setActiveSheet(null)}
+                    title="문학 소년의 큐티"
+                >
+                    <div className="min-h-[200px]">
+                        {mentorLoading ? (
+                            <div className="flex flex-col items-center justify-center py-12 gap-3">
+                                <Sparkles className="h-8 w-8 text-[#A3C4BC] animate-pulse" />
+                                <p className="text-[#6B8A8A] text-sm font-medium">따뜻한 위로의 문장을 적는 중입니다...</p>
+                            </div>
+                        ) : mentorContent ? (
+                            <div className="prose prose-sm max-w-none text-[#3A4A4A] leading-relaxed">
+                                <ReactMarkdown
+                                    components={{
+                                        h1: ({ children }) => <h1 className="text-xl font-bold text-[#4A6767] mb-4">{children}</h1>,
+                                        h2: ({ children }) => <h2 className="text-lg font-bold text-[#4A6767] mt-6 mb-3">{children}</h2>,
+                                        h3: ({ children }) => <h3 className="text-base font-bold text-[#4A6767] mt-4 mb-2">{children}</h3>,
+                                        p: ({ children }) => <p className="mb-4 text-[0.95rem]">{children}</p>,
+                                        blockquote: ({ children }) => (
+                                            <blockquote className="border-l-4 border-[#A3C4BC] pl-4 italic my-4 text-[#5A7A7A] bg-[#F0F7F4] py-2 pr-2 rounded-r-lg">
+                                                {children}
+                                            </blockquote>
+                                        ),
+                                        hr: () => <hr className="my-6 border-[#EBF2E8]" />,
+                                    }}
+                                >
+                                    {mentorContent}
+                                </ReactMarkdown>
+                            </div>
+                        ) : (
+                            <p className="text-center text-gray-400 py-8">내용을 불러올 수 없습니다.</p>
+                        )}
                     </div>
                 </BottomSheet>
 
