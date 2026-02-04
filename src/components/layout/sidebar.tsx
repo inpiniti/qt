@@ -4,6 +4,7 @@ import * as React from "react"
 import { useDocStore } from "@/store/useDocStore"
 import { getDocTree } from "@/app/actions/get-doc"
 import { FileText, Folder, ChevronRight, ChevronDown, Package, Loader2, Search as SearchIcon, FileCode, PenTool, ShieldCheck, GitBranch } from "lucide-react"
+import { SidebarCalendar } from "@/components/qt/sidebar-calendar"
 import { cn } from "@/lib/utils"
 
 interface TreeItem {
@@ -128,6 +129,9 @@ export function Sidebar() {
                     />
                 </div>
             </div>
+
+            {/* QT Calendar Widget */}
+            {viewMode === 'qt' && <SidebarCalendar />}
 
             {/* Scrollable Tree View */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-2">

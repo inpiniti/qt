@@ -8,6 +8,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-gamja: var(--font-gamja);
+  
+  --color-pastel-bg: #EBF2E8;
+  --color-pastel-card: #F7FBF5;
+  --color-pastel-text: #2C3E3E;
+  --color-pastel-accent: #E88D67;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
