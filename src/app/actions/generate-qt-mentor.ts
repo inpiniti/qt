@@ -1,9 +1,7 @@
 "use server"
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 export async function generateQtMentor(title: string, passage: string, verses: { num: number; text: string }[]) {
-    const apiKey = process.env.VITE_GEMINI_API_KEY;
+    const apiKey = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
         console.error("GEMINI_API_KEY is not set in environment variables");
@@ -11,12 +9,10 @@ export async function generateQtMentor(title: string, passage: string, verses: {
     }
 
     try {
-        const genAI = new GoogleGenerativeAI(apiKey);
-        // Using gemini-1.5-flash for better stability and support
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = "gemini-3-flash-preview";
+        const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
         const verseText = verses.map(v => `${v.num}. ${v.text}`).join('\n');
-
         const prompt = `
 당신은 섬세한 감수성을 가진 '문학 소년'이자 깊은 통찰을 가진 '신앙 멘토'입니다.
 다음 성경 본문을 바탕으로 따뜻하고 서정적인 큐티(QT)를 작성해주세요.
@@ -36,9 +32,39 @@ ${verseText}
 3. 형식: 마크다운(Markdown) 형식을 사용하여 읽기 좋게 구성하세요.
 `;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        return response.text();
+        const response = await fetch(targetUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        parts: [{ text: prompt }]
+                    }
+                ],
+                generationConfig: {
+                    temperature: 0.7,
+                    topK: 40,
+                    topP: 0.95,
+                    maxOutputTokens: 2048,
+                }
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`[Gemini API] Error (${response.status}):`, errorText);
+            return `내용을 생성할 수 없습니다. (에러: ${response.status})`;
+        }
+
+        const data = await response.json();
+
+        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+            return data.candidates[0].content.parts[0].text;
+        } else {
+            console.error("[Gemini API] Unexpected response format:", data);
+            return "응답 형식이 올바르지 않습니다.";
+        }
+
     } catch (error) {
         console.error("Error generating QT Mentor content:", error);
         return "내용을 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
