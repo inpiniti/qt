@@ -99,7 +99,7 @@ export function MobileMainView() {
     }
 
     return (
-        <div className="fixed inset-0 w-full bg-[#F7FBF5] font-gamja text-[#2C3E3E] overflow-hidden overscroll-none">
+        <div className="fixed inset-0 w-full bg-[#F7FBF5] font-sans text-[#2C3E3E] overflow-hidden overscroll-none">
             <div className="w-full h-full relative flex flex-col overflow-hidden">
 
                 {/* Header */}

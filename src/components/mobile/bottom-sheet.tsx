@@ -62,7 +62,7 @@ export function BottomSheet({ isOpen, onClose, title, children, height = "h-[85v
 
                         {/* Header */}
                         <div className="px-6 pb-4 flex items-center justify-between">
-                            <h2 className="text-2xl font-gamja font-bold text-[#4A6767]">{title}</h2>
+                            <h2 className="text-2xl font-bold text-[#4A6767]">{title}</h2>
                             <button
                                 onClick={onClose}
                                 className="p-2 -mr-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-black/5"
