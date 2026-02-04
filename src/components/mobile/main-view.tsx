@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, BookOpen, MessageCircleHeart, Share2, Menu } from "lucide-react"
+import { ChevronLeft, ChevronRight, BookOpen, MessageCircleHeart, Share2, Menu, Copy, Check } from "lucide-react"
 import { BottomSheet } from "./bottom-sheet"
 import { cn } from "@/lib/utils"
 
@@ -32,6 +32,7 @@ export function MobileMainView() {
     const [meditationLoading, setMeditationLoading] = React.useState(false)
     const [mentorContent, setMentorContent] = React.useState<string | null>(null)
     const [mentorLoading, setMentorLoading] = React.useState(false)
+    const [copied, setCopied] = React.useState(false)
 
     // Format date for API (YYYY-MM-DD)
     const formatDateKey = (d: Date) => {
@@ -93,6 +94,7 @@ export function MobileMainView() {
 
     const handleOpenMentor = async () => {
         setActiveSheet("mentor")
+        setCopied(false) // Reset copy status when opening
         if (data && !mentorContent) {
             setMentorLoading(true)
             try {
@@ -103,6 +105,14 @@ export function MobileMainView() {
             } finally {
                 setMentorLoading(false)
             }
+        }
+    }
+
+    const handleCopy = () => {
+        if (mentorContent) {
+            navigator.clipboard.writeText(mentorContent)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
         }
     }
 
@@ -243,14 +253,33 @@ export function MobileMainView() {
                     onClose={() => setActiveSheet(null)}
                     title="문학 소년의 큐티"
                 >
-                    <div className="min-h-[200px]">
+                    <div className="min-h-[200px] relative">
+                        {mentorContent && !mentorLoading && (
+                            <button
+                                onClick={handleCopy}
+                                className="absolute -top-12 right-0 p-2 text-gray-400 hover:text-[#4A6767] transition-all flex items-center gap-1.5 bg-gray-50/50 rounded-full active:scale-95 z-30"
+                            >
+                                {copied ? (
+                                    <>
+                                        <Check className="h-4 w-4 text-green-500" />
+                                        <span className="text-[0.7rem] font-bold text-green-600">복사됨</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Copy className="h-4 w-4" />
+                                        <span className="text-[0.7rem] font-bold">전체 복사</span>
+                                    </>
+                                )}
+                            </button>
+                        )}
+
                         {mentorLoading ? (
                             <div className="flex flex-col items-center justify-center py-12 gap-3">
                                 <Sparkles className="h-8 w-8 text-[#A3C4BC] animate-pulse" />
                                 <p className="text-[#6B8A8A] text-sm font-medium">따뜻한 위로의 문장을 적는 중입니다...</p>
                             </div>
                         ) : mentorContent ? (
-                            <div className="prose prose-sm max-w-none text-[#3A4A4A] leading-relaxed">
+                            <div className="prose prose-sm max-w-none text-[#3A4A4A] leading-relaxed select-text">
                                 <ReactMarkdown
                                     components={{
                                         h1: ({ children }) => <h1 className="text-xl font-bold text-[#4A6767] mb-4">{children}</h1>,
