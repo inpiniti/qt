@@ -252,27 +252,28 @@ export function MobileMainView() {
                     isOpen={activeSheet === "mentor"}
                     onClose={() => setActiveSheet(null)}
                     title="문학 소년의 큐티"
-                >
-                    <div className="min-h-[200px] relative">
-                        {mentorContent && !mentorLoading && (
+                    headerAction={
+                        mentorContent && !mentorLoading ? (
                             <button
                                 onClick={handleCopy}
-                                className="absolute -top-12 right-0 p-2 text-gray-400 hover:text-[#4A6767] transition-all flex items-center gap-1.5 bg-gray-50/50 rounded-full active:scale-95 z-30"
+                                className="p-1.5 text-gray-400 hover:text-[#4A6767] transition-all bg-gray-100 rounded-lg active:scale-95 flex items-center gap-1"
                             >
                                 {copied ? (
                                     <>
                                         <Check className="h-4 w-4 text-green-500" />
-                                        <span className="text-[0.7rem] font-bold text-green-600">복사됨</span>
+                                        <span className="text-[0.65rem] font-bold text-green-600">완료</span>
                                     </>
                                 ) : (
                                     <>
                                         <Copy className="h-4 w-4" />
-                                        <span className="text-[0.7rem] font-bold">전체 복사</span>
+                                        <span className="text-[0.65rem] font-bold">복사</span>
                                     </>
                                 )}
                             </button>
-                        )}
-
+                        ) : null
+                    }
+                >
+                    <div className="min-h-[200px] relative">
                         {mentorLoading ? (
                             <div className="flex flex-col items-center justify-center py-12 gap-3">
                                 <Sparkles className="h-8 w-8 text-[#A3C4BC] animate-pulse" />

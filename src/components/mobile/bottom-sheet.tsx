@@ -10,10 +10,11 @@ interface BottomSheetProps {
     onClose: () => void
     title: string
     children: React.ReactNode
+    headerAction?: React.ReactNode
     height?: string // e.g., "h-[80vh]"
 }
 
-export function BottomSheet({ isOpen, onClose, title, children, height = "h-[85vh]" }: BottomSheetProps) {
+export function BottomSheet({ isOpen, onClose, title, children, headerAction, height = "h-[85vh]" }: BottomSheetProps) {
     // Drag end handler to close if dragged down sufficiently or with high velocity
     const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         // info.offset.y > 50 OR info.velocity.y > 400 (Faster reactivity)
@@ -62,7 +63,10 @@ export function BottomSheet({ isOpen, onClose, title, children, height = "h-[85v
 
                         {/* Header */}
                         <div className="px-6 pb-4 flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-[#4A6767]">{title}</h2>
+                            <div className="flex items-center gap-2">
+                                <h2 className="text-2xl font-bold text-[#4A6767]">{title}</h2>
+                                {headerAction}
+                            </div>
                             <button
                                 onClick={onClose}
                                 className="p-2 -mr-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-black/5"
