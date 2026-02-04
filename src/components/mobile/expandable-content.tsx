@@ -58,9 +58,9 @@ export function ExpandableContent({ content }: ExpandableContentProps) {
 
             <div
                 className={`
-          relative text-gray-600 text-[0.6rem] leading-tight overflow-hidden 
+          relative text-gray-600 text-[0.85rem] leading-relaxed overflow-hidden 
           break-words whitespace-normal font-sans
-          ${isExpanded ? '' : 'max-h-[2.2rem]'} 
+          ${isExpanded ? '' : 'max-h-[3.8rem]'} 
         `}
             >
                 <p className="w-full font-normal m-0 tracking-tight">
@@ -69,7 +69,7 @@ export function ExpandableContent({ content }: ExpandableContentProps) {
 
                 {/* Smaller Gradient Mask */}
                 {!isExpanded && (
-                    <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-t from-[#FAFAF8] to-transparent pointer-events-none" />
                 )}
             </div>
 
